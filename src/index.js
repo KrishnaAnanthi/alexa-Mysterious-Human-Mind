@@ -1,358 +1,308 @@
-"use strict";
-var APP_ID = "amzn1.ask.skill.48d7a996-876a-450d-a2a3-8ee19ac98878";  // TODO replace with your app ID (OPTIONAL).
+'use strict';
+var Alexa = require('alexa-sdk');
+var APP_ID = "amzn1.ask.skill.087d052f-d93f-4faa-abaa-c18c9ff9f44f";  // TODO replace with your app ID (OPTIONAL).
 
-var ANSWER_COUNT = 4; // The number of possible answers per trivia question.
-var GAME_LENGTH = 5;  // The number of questions per trivia game.
-var GAME_STATES = {
-    TRIVIA: "_TRIVIAMODE", // Asking trivia questions.
-    START: "_STARTMODE", // Entry point, start the game.
-    HELP: "_HELPMODE" // The user is asking for help.
-};
-var questions = require("./questions");
-
-/**
- * When editing your questions pay attention to your punctuation. Make sure you use question marks or periods.
- * Make sure the first answer is the correct one. Set at least ANSWER_COUNT answers, any extras will be shuffled in.
- */
-var languageString = {
+var languageStrings = {
     "en": {
         "translation": {
-            "QUESTIONS" : questions["QUESTIONS_EN_US"],
-            "GAME_NAME" : "Database Quiz Master", // Be sure to change this for your skill.
-            "HELP_MESSAGE": "I will ask you %s multiple choice questions. Respond with the number of the answer. " +
-            "For example, say one, two, three, or four. To start a new game at any time, say, start game. ",
-            "REPEAT_QUESTION_MESSAGE": "To repeat the last question, say, repeat. ",
-            "ASK_MESSAGE_START": "Would you like to start playing?",
-            "HELP_REPROMPT": "To give an answer to a question, respond with the number of the answer. ",
-            "STOP_MESSAGE": "Would you like to keep playing?",
-            "CANCEL_MESSAGE": "Ok, let\'s play again soon.",
-            "NO_MESSAGE": "Ok, we\'ll play another time. Goodbye!",
-            "TRIVIA_UNHANDLED": "Try saying a number between 1 and %s",
-            "HELP_UNHANDLED": "Say yes to continue, or no to end the game.",
-            "START_UNHANDLED": "Say start to start a new game.",
-            "NEW_GAME_MESSAGE": "Welcome to %s. ",
-            "WELCOME_MESSAGE": "I will ask you %s questions, try to get as many right as you can. " +
-            "Just say the number of the answer. Let\'s begin. ",
-            "ANSWER_CORRECT_MESSAGE": "correct. ",
-            "ANSWER_WRONG_MESSAGE": "wrong. ",
-            "CORRECT_ANSWER_MESSAGE": "The correct answer is %s: %s. ",
-            "ANSWER_IS_MESSAGE": "That answer is ",
-            "TELL_QUESTION_MESSAGE": "Question %s. %s ",
-            "GAME_OVER_MESSAGE": "You got %s out of %s questions correct. Thank you for playing!",
-            "SCORE_IS_MESSAGE": "Your score is %s. "
+            "FACTS": [
+               "The mind is typically defined as the organized totality or system of all mental processes or psychic activities of an individual.",
+				"Many philosophers hold that the brain is a detector of the mind and that the mind is an inner, subjective state of consciousness.",
+				"Philosophers have used a variety of metaphors to describe the mind, including a blank sheet, a hydraulic device with different forces operating in it, or a television switchboard.",
+				"Attempts to understand the mind go back at least to the ancient Greeks. Plato, for example, believed that the mind acquired knowledge through virtue, independently of sense experience. Descartes and Leibniz also believed the mind gained knowledge through thinking and reasoning—or, in other words, rationalism.",
+				"In contrast to rationalists, empiricists, such as Aristotle, John Locke, and David Hume, believe that the mind gains knowledge from experience.",
+				"Brand names have a strong influence on the mind. In one study, a group of experimenters were given unlabeled samples of both Pepsi and Coke. Not a single tester could tell the difference between the two. The test was repeated with the correct labels attached. Three out of the four testers chose Coke. In fact, the Coke label activated parts of the brain associated with the mind (memory, self-image, and culture) that the Pepsi label didn’t.",
+				"Scientists are unsure if other types of animals have a mind or if some man-made machines could ever possess a mind.",
+				"Combining both rationalism and empiricism, Kant argued that human knowledge depends on both sense experience and innate capacities of the mind.",
+				"Historically, there have been three major schools of thought that describe the relationship of the brain and the mind: 1) dualism, which holds that the mind exists independently from the brain; 2) materialism, which argues that the mind is identical to the physical processes of the brain; and 3) idealism, which posits that only mental phenomena exist.",
+				"Scientists propose that the human mind evolved largely through the sexual choices our ancestors made, similar to the way a peacock’s tail evolved through sexual selection.",
+				"Most scientists argue that there is no evidence that playing classical music to babies increases the power of their mind. However, children who learn to play a musical instrument can develop their mental skills further than those who don’t learn a musical instrument.",
+				"Early-life stress negatively affects the mind. Abuse, neglect, and harsh or inconsistent discipline in early life increases the risk of depression and anxiety as well as obesity, diabetes, hypertension, and heart disease.",
+				"The term “mind” is from the Old English gemynd, or “memory,” and the Proto-Indo-European verbal root *men-, meaning “to think, remember.” The use of “mind” to refer to all mental faculties, thought, feelings, memory, and volition developed gradually over the 14th and 15th centuries.",
+				"Buddha described the mind as being filled with drunken monkeys who jumped, screeched, and chatted endlessly. Fear, according to Buddha, was an especially loud monkey. Buddha taught meditation as a way to tame the “drunken monkeys” in the mind.",
+				"The NSF estimates that a human brain produces as many as 12,000 to 50,000 thoughts per day, depending on how deep a thinker a person is. Most of the so-called random daily thoughts are about our social environment and ourselves.",
+				"In my opinion, there is no aspect of reality beyond the reach of the human mind said by Stephan Hawking ",
+				"A group of scientists from Cal Tech and UCLA have developed a way for epilepsy patients who have had electrodes implanted inside their brains to control a computer mouse with their minds.",
+				"The Stanford Prison Experiment is an infamous experiment that took average people and randomly assigned them to be either guards or prisoners. After a few days, the prisoners and guards became grossly absorbed in their roles. The experiment revealed how readily the human mind accepts authority and institutional ideologies.",
+				"A single descriptive word can manipulate how the mind remembers an event. For example, in a 1974 experiment, 45 people watched the film of a car accident. Different groups of people were asked how fast the cars were going using different trigger words, such as “hit,” “smashed,” “collided,” bumped,” and “contacted.” The group whose question included the word “smashed” estimated the cars were going 10 mph faster than the group whose word was “contacted.” A week later, when participants were asked about broken glass, those who were asked more forceful trigger words reported that there was broken glass even though there was none.",
+				"Studies show that people are able to group items in short-term memory into roughly seven units that allow them to hold more individual items. Interestingly, many human belief systems have considered the number 7 to be a sacred number.",
+				"Some scientists believe that there may be universal features of the human mind that make it easier for people to believe in a higher power. In fact, brain scans of Franciscan nuns, Tibetan Buddhists, and Pentecostal Christians showed similar activity in their brains during prayer and meditation. Interestingly, both believers and atheists point to brain scans as proof of their positions.",
+				"In 1938, Orson Wells broadcasted an adaption of H.G. Welles’ War of the World on the radio. The broadcast caused mass panic in nearly 3 million of the 6 million listeners. Psychologists note that even highly educated people believed it because it was on the radio and thus “authoritative.” They also note that media manipulation of our minds is a regular art form.",
+				"The mind of a suicidal person perceives time differently. Psychologists have noted that in the mind of suicidal people, time seemed to move significantly slower. The suicidal mind also had a more difficult time thinking about the future. Researchers suggest this helped the person withdraw from thinking about past failures and what was perceived as a hopeless future.",
+				"The mind of a suicidal person tends to focus increasingly on concrete thought, which is often conveyed in suicide notes. For example, suicide notes tend to be more banal and specific, such as “Don’t forget to feed the cat.” Fake suicide notes, however, tend to include more contemplative language, such as “Always be happy.” Psychologists note the suicidal mind is trying to slip into idle mental labor to avoid unpleasant emotions.",
+				"The conscious mind includes sensations, perceptions, memories, feelings, and fantasies inside of our current awareness. The preconscious mind includes those thoughts that we are thinking at the moment but can easily draw into our conscious mind. The subconscious mind is the psychic activity that operates below the level of awareness.",
+				"Studies show that people clean up more if there is a faint smell of cleaning liquid in the air, they become more competitive if they see a briefcase, and they become more cooperative if they glimpse words like “dependable”—all without being aware of the change or what triggered it. Scientists note that this shows how everyday sights, smells, and sounds, can activate the subconscious mind.",
+				"Mind control is the unethical use of manipulative techniques to persuade others to conform to the wishes of the manipulator. It was first recorded during the Korean War.",
+				"Solomon Shereshevsky was a Russian journalist who couldn’t forget. He suffered from synesthesia, a phenomenon in which one sense (for example, vision) stimulates another sense (such as hearing). Solomon’s extreme synesthesia led him to taste, smell, and see vivid images in conjunction with numbers and sounds. Because a single word could trigger a flood of memories and associations, he had a difficult time reading a book or having a simple conversation.",
+				"One of the crueler mind experiments was conducted by psychologist Harry Harlow who studied severe maternal deprivation. He separated a baby monkey from its mother and raised it in a cage with two substitute mothers. One mother was made from wire and had a bottle. The other mother was made from cloth, but didn’t have a bottle. As soon the infant finished nursing, it would cling to the cloth monkey. When the experimenters introduced frightening stimulus into the cage, the monkeys ran to the cloth monkey for protection. The monkeys grew up with severe emotional and behavioral problems.",
+				"When the mind recalls a memory, it’s not the original memory. In fact, the act of remembering is an act of creative reimagination. The put-together memory doesn’t just have a few holes; it also has some entirely new bits pasted in.",
+				"The act of remembering is an act of creative reimagination. The CIA reportedly created a project called Project MK-ULTRA to experiment with mind control using LSD. They even tried to use the drug as a way to completely wipe the memories of retiring CIA agents.",
+				"Scientists believe that the mind forgets in order to avoid information overload, to think more quickly, assimilate new information easier, and to avoid emotional hangovers.",
+				"The human mind has a difficult time differentiating the innate from the environmental. In other words, if the mind is used to interpreting the world a certain way, it expects that the world is that way naturally and unalterably. For example, for many people, the color pink is naturally feminine and blue is naturally male. However, in the 1920s, parents dressed boys in pink because it was a watered down version of red, which was seen as masculine and fierce. Girls were dressed in pale blue because it was associated with the Virgin Mary.",
+				"Research has proven how easy it is to create false memories through the force of suggestion. Psychologists found that if they repeated questions (e.g. hugging Bugs Bunny at Disney World—an impossibility) and invited the mind to imagine sensory detail (do you remember stroking Bugs Bunny’s velvety ears), a person would begin to believe it was an actual event.",
+				"In 1965, a botched circumcision burned away David Reimer’s entire penis. Doctors decided to raise him as a girl, and removed his testicles and fashioned female genitalia. His parents changed his name to Brenda. He finally learned at age 14 that he was a boy, and later committed suicide at age 38. He reported that what they did to his body was not as bad as what they did to his mind.",
+				"More than 100 studies show that about half of crime is largely under genetic control. Environmental factors such as parenting, poverty, and discrimination account for the other half. In other words, nature and nurture are both important in developing the mind.",
+				"During the famous Milgram Experiment (1961), 65% of volunteers gave what they thought was a fatal dose of electric shock to someone when told to do so, even though less than 1% said they would in a pre-experiment survey. The study showed that the human mind does not necessarily operate based on personality but rather on the roles we are asked to play to make society move smoothly.",
+				"The mind can practice new tasks, such as learning a new piece of music during REM sleep. REM sleep also appears to boost performance with tasks involving procedural memory, or the subconscious “how-to” knowledge that a person uses when walking, riding a bike, or performing most physical tasks.",
+				"Most people assume that our conscious mind continues until the end of day and then picks up after we wake up. Scientists argue, however, that dreaming is a phenomenon that’s just as visceral and immediate as consciousness is and that since we spend roughly 20 years asleep, dreams should be considered an alternate reality.",
+				"Advertisers use mind illusions to make their products more appealing. For example, they produce condiment bottles with long necks because the mind is better at judging size than volume. Bottles of maple syrup are narrow at the base but bulge in the middle because that is where a person is most likely to look.",
+				"The moon appears to be much larger than usual when it’s low in the sky because the mind interprets the size of the moon in relation to distant objects and the horizon. But when the moon is high in the sky, the mind has no such frame of reference, and so the moon appears smaller.",
+				"Scientists note that the mind is a giant pattern-making machine. It invents shapes and identifiable things to explain odd patterns in arrangements. The mind can also block out things it wants to ignore, such as the tactile sensation of clothes rubbing on a person’s skin or a person’s own body odor.",
+				"The mind’s power of expectation can blind people to facts and lure them into unwitting conjecture in virtually every way they perceive the world. For example, testers in a study responded differently to an odor that they sniffed out of a test tube depending on whether they were told that it was fancy cheese or human waste.",
+				"Short-term memory is linked to current electrical activity taking place in a person’s neurons, or the pattern of signal transmission that goes through the brain. Long-term memory, however, depends on permanent physical changes in the brain.",
+				"The mind stores memories in different ways, although the boundaries are not always clear cut: short-term memory (working memory), long-term memory (declarative memory), and procedural memory (“how-to” memory associated with physical skills such as shoe tying). Procedural memory is remarkably durable and is even able to survive the ravages of diseases like Alzheimer’s.",
+				"Some researchers argue that the Internet is changing the structure of our brains, which changes the mind’s ability to think and to learn. Specifically, the Internet overstimulates the part of the brain involved in temporary memory so that deep thinking and creativity become increasingly difficult.",
+				"The Internet may be changing the structure of our brains, which changes the mind’s ability to think and to learn",
+				"A human’s eye is able to see fine detail in only a small sliver of its visual field. However, the mind uses saccades (quick, automatic eye movements) to compensate for this weakness. The eye performs two or three saccades each second to give the mind a single, seamless whole. When a person is severely drunk, the saccades slow down, and the mind begins to see the world as the eye perceives it, a patch of sharpness surrounded by a blurry field.",
+				"The placebo (Latin for “I will please”) effect occurs when the mind believes that a certain medication will help them when the medicine in fact has no proven therapeutic effects for a particular condition.",
+				"Studies show that 50-70% of doctor visits can be traced to psychological reasons.",
+				"A study of nearly 1 million students in New York showed that those who ate lunches without preservatives, dyes, and other additives performed 14% better on IQ tests.",
+				"Memories that are triggered by scent have some of the strongest emotional connections and appear more intense than other memory triggers.",
+				"The mind wanders about 30% of the time and sometimes as much as 70%, say, for example, when someone is driving down an uncrowded freeway.",
+				"Researchers found that distorting body image can change the mind’s perception of pain. Subjects who viewed their wounded hands through the wrong end of binoculars, which made their hand look smaller, experienced decreased pain and decreased swelling. However, those who looked at the wounded hand through the right side of the binoculars, which made the hand look larger, experienced increased pain.",
+				"Scientists are unsure why we forget. Scientists are unsure how things are forgotten; in other words, they are unsure what makes a person unable to remember even long-term memories. New research shows that people don’t necessarily forget, they simply lose the ability to retrieve older, rarely visited memories.",
+				"Researchers note that like a mathematical formula, which is a statement about a number represented by a number, the mind trying to understand the nature of the mind introduces a certain paradoxical “loopiness.” Scientists use the famous Escher print of a right hand drawing a left hand that in turn is drawing a right hand as a visual example of this paradox.",
+				"The mind imagines objects slightly from above and tilted. For example, researchers asked people around the world to draw a coffee cup. Almost everyone drew a coffee cup from a perspective slightly above the cup looking down and offset a little to the right or left. No one drew it looking straight down from above. This uniformity in perspective has been dubbed the canonical perspective.",
+				"The law of attraction is not a new idea. It has always been here from ancient times, and people have always used it.Hunters, who painted scenes of hunting on the walls of caves thousands of years ago, used the law of attraction, as well as contemporary businessmen, who visualize what they wish to accomplish. You use it too, whenever you think, make plans or daydream.",
+				"Use visualization to learn a new skill. Neuroplasticity is the ability of the brain to continuously create new neural pathways. When we repeat a skill that we are trying to master, we strengthen the neural networks that represent that action. The same happens physically in the brain whether we perform the action, or simply visualize it—Your brain cannot tell the difference between an action you performed and an action you visualized.So take the time to add visualization as part of your rehearsals of anything you are trying to master, such as delivering a flawless presentation?",
+				"Achieve your goals by keeping your mouth shut. Psychology tests have proven that when you tell someone your goal, and they acknowledge it, you are less likely to do the work to realize that goal. This is because your brain mistakes the talking for the doing—that is, the gratification that the social acknowledgment brings tricks your brain into feeling that the goal has already been accomplished. The satisfaction you experience in the telling removes the motivation to do whatever it takes to actually make it happen.Heed this information and keep your goals to yourself. It might just spur you to work harder to achieve an important goal.",
+				"Smile to improve your mood. The Facial Feedback Hypothesis indicates that facial expressions representative of an emotion trigger changes in your body that are similar to those that happen when you experience the actual emotion. For example, your brain cannot tell the difference between a posed smile or a genuine smile. A posed smile will elicit, physiologically, the same pleasure or happiness response as a genuine smile. Your facial muscles cue your brain to experience that positive emotion. Taking notice of this, consider how this information can help you to regulate some of your emotional reactions by controlling your facial expressions. Try this the next time you are in a bad mood: Instead of frowning, which reinforces a negative mood, consider smiling. Research has shown that by doing so, you are likely to experience a more positive mood.",
+				"Understand the physiology of emotional pain to develop empathy. Research at the Department of Psychological Sciences at Purdue University discovered that social or emotional pain is as real and intense as physical pain. The same brain networks are activated when a person experiences a physical injury as when they go through a painful emotional experience. Your brain cannot distinguish between physical and emotional pain.Consider for a moment that when we hurt someone emotionally, it may very well be the equivalent of breaking one of their bones. We can create a better world in our sphere of influence just by being mindful of this thought and using it to help develop our empathy towards others.",
+				"Lower your stress level by managing your thoughts. There is ample research proving that your brain cannot tell the difference between a real and imagined threat; the physical response is the same.",
+				"A 10 second strategy helps to Transcend Stress, Achieve Optimal Brain Function, and Maximize Your Creative Intelligence.This 10-second strategy works because it creates a distraction from the primitive brain where fear resides. Lets try now. Imagine that there is a button in the center of your left palm; imagine that this button, when pressed, will send a signal to your brain to stop the fearful thinking.Press the button with your right hand as you become aware of your breath.Take three easy breaths counting them out.Imagine a different color for each number.As you exhale, relax in the present moment.",
+				"Whatever you desire, you can achieve it using Mind Power.All physical reality is made up of vibrations of energy; even your thoughts are vibrations of energy. While it sounds like a concept or theory, this is a new reality that quantum physics has revealed to us. Your thoughts have a powerful influence on your life.",
+				"Your thoughts affect what happens to you. Most of us go through life taking little notice of our thought processes: how the mind thinks, what it fears, what it heeds, what it says to itself, what it brushes aside. For the most part, we go about your lives with minimal attention paid to how we think. We go through life neglecting one of the most important and powerful forces in our life: our thoughts.",
+				"What you focus on, you attract. Mind Power is directing your thoughts towards a desired outcome. Focus on success and you attract success. Focus on fear and failure and you attract failure. Mind Power is understanding these principles and making our thoughts work for us. Your thoughts are the primary creative forces in your life. Use them consciously and you will awaken to a whole new life of power and opportunity.",
+				"A new life is but a new mind. In order to make changes in your life, you must change the way you use your mind. You cannot think both negative and positive thoughts at the same time, as one will always dominate the other. As humans, we’re creatures of habit, and so are our minds. We must make sure empowering thoughts and positive emotions are the dominating influence in the mind.",
+				"To change the external, you must change the internal. Most people forget this step. They try to change external conditions by working directly on those conditions but this almost always proves futile or temporary, unless it is accompanied by a change of thoughts and beliefs. Train your conscious mind to think thoughts of success, happiness, health, and prosperity. Learn to weed out negativity such as fear and worry. Keep your conscious mind busy with the expectation of the best, and make sure the thoughts you habitually think are based upon what you want in your life.",
+				"We all know we have a subconscious, but for most of us, our knowledge of it ends there. Your subconscious mind is a second, hidden mind that exists within you. It interprets and acts upon the predominating thoughts that reside within your conscious mind, and its goal is to attract circumstances and situations that match the images you have within.",
+				"We reap what we sow. Think of your subconscious mind as incredibly fertile soil that will grow any seed you plant in it. Your habitual thoughts and beliefs are seeds that are being constantly sown. Just as corn kernels produce corn and wheat seeds produce wheat, the contents of your thoughts will have an effect in your life. You will reap what you sow; this is a law.",
+				"Your conscious mind is like the gardener that tends to the soil. It’s your responsibility to be aware of how this process works, choosing wisely what reaches the inner garden — your subconscious. For most, our role as gardener has never been explained. By not knowing this role, we have allowed seeds of all types – good and bad – to enter our subconscious.",
+				"The subconscious doesn’t discriminate, judge, or censor. It will manifest success, abundance, and health just as easily as failure, ill health, and misfortune. Your subconscious accepts what is impressed upon it with feeling and repetition, whether these thoughts are positive or negative. It does not evaluate things like your conscious mind does. This is why it is so important to be aware of what you are thinking.",
+				"Once you understand that your subconscious will bring you what you need or desire, and you begin working daily to project thoughts and images of what you want, seemingly chance-events will start happening to you. To the untrained mind, synchronicity appears to to be coincidence or luck, but it is neither. It is simply the operation of the forces you have set into motion with your thoughts. This powerful inner collaborator, working with your conscious mind, will bring to you the people and circumstances you require to achieve your goals.",
+				"We are all part of the greater whole.Modern physics sees the universe as a vast, inseparable web of dynamic activity. Not only is the universe alive and constantly changing, but everything in the universe affects everything else. At its most primary level, the universe seems to be whole and undifferentiated, a fathomless sea of energy that permeates every object and every act. It is all one. Scientists are now confirming what mystics and seers have been telling us for thousands of years: we are not separate from, but part of one greater whole.",
+				"Everything in the universe is made up of energy. Everything from the items in your home, to the events that happen to you, and even our thoughts are made up of vibrations of energy. This means our thoughts are made of the exact same substance as the building blocks of the universe. Knowing this, we can use it to our advantage.",
+				"In the past, it might have seemed unbelievable that we could create our reality through this process. But now we know how to do it, and why it works. Since our thoughts are energy, it only makes sense that repeated images, affirmations, deeply held beliefs, fears and desires would have an effect on our own reality by vibrating within the larger web of reality. In fact, if we are all connected, how could it be otherwise?",
+				"We live in an immense quantum sea of vibrating energy that is responsive to how and what we think. Our thoughts are creative forces and are constantly expressing themselves in our lives. Once we realize this, we can begin designing our lives with clarity and purpose. The Mind Power system consists of easily learned techniques that help you focus and direct your thoughts, and the first technique is visualization.",
+				"Visualization is simply a mental rehearsal. You create images in your mind of having or doing whatever it is that you want. You then repeat these images over and over again, daily for about five minutes a day. In your five-minute practice, use your imagination to see yourself being successful in whatever goal you may have.",
+				"What you focus on, you attract. The key to visualizing is to always visualize that you already have what you desire. This is a mental trick. Rather than hoping you will achieve it, or building confidence that one day it will happen, live and feel it as if it is happening to you now. On one level you know this is just a mental trick, but the subconscious mind cannot distinguish between what is real and what is imagined. Your subconscious will act upon the images you create within, whether they reflect your current reality or not. John Kehoe has taught this skill to millions of people worldwide who have seen results. It’s not magic, and it doesn’t happen overnight, but if you persist in your vision, you will be successful.Whatever your definition of success is, you can achieve it.  You can achieve anything you put your mind to, once you understand Mind Power.",
+				"Affirmations are statements that you say either out loud, or quietly to yourself. By doing this, you affirm to yourself whatever it is that you desire. For example, if you have an important interview coming up, you could affirm to yourself that you will have a great interview.",
+				"Why Mind Power affirmations work. When you verbalize something and repeat it to yourself, it will influence your thoughts. This is why affirmations are successful. If you say to yourself, “I will have a great interview”, you will automatically begin thinking about your upcoming interview as a great interview. What you focus on, you attract so begin using affirmations to focus on what you desire.",
+				"Always affirm the positive. Avoid asking yourself, “What if it’s a terrible interview?” or thinking things like, “I’m so nervous”. These statements focus on the opposite of what you want. Be positive, and use words that reflect what you want to happen. If you want to be confident, use that word in your affirmation.",
+				"Make your affirmations short and simple. Use a short phrase, or one sentence at the most. Your affirmation should be like a simple mantra that you can repeat over and over again, without thinking.",
+				"Don’t force yourself to believe it. Just say it. You don’t need to force yourself to believe your affirmation, simply repeat it over and over and it will naturally have an effect on you. Repeating the statement many times will cause it to work for you.",
+				"Affirmations are simple, easy to use, and very powerful. Many professional athletes use them to perform well.  Successful business people use them to close deals and run their businesses, and artists use them to be creative and come up with innovative ideas. You can use them too, in any area of your life.",
+				"They say nothing succeeds like success, and it’s true. Success vibration acts like a magnet that attracts success and opportunities to you. When you think and feel success, you vibrate with success energy and act accordingly.",
+				"People who are already successful have momentum on their side; the law of attraction is already working for them. They attract even greater success because of the nature of their predominant thoughts. The success vibration is a great asset to someone who is already successful. If you are not yet successful, there’s no need to worry. There are many Mind Power techniques you can use to create a success vibration. One of them is the technique of acknowledging.",
+				"One of the mind Power techniques you can use to create a success vibration is acknowledging. This technique begins with searching for areas of your life where you are already successful. Unfortunately most of us are quicker to see our own failures and shortcomings than we are to acknowledge our success. To create a success vibration you must change this self-deprecating habit and become success-focused.",
+				"Examine your personal qualities and present situation and find things to feel successful about. Are you a good friend to someone? Are you positive? Are you generous? Do you dress well? Are you a safe driver? You are not limited to a narrow definition of success such as someone who is rich, famous, and good-looking. There are literally hundreds of other aspects of your life that are equally important; the key is to find aspects that help us feel successful in our own lives. This is one way to create a success vibration.",
+				"Create a success vibration and you’ll attract success. Start by creating an acknowledging list. Your list can be either general or specific. For example, let’s say you’re an entrepreneur building your business. You might make a specific acknowledging list that highlights the qualities you possess which will help you succeed in that role, such as: I’m a good communicator, I have great people skills, I’m a great leader, etc. By focusing on this list you are building a specific success vibration. The same principle works whether you’re closing a multi-million-dollar deal, getting an entry-level job, or finding the perfect partner.",
+				"You can’t avoid negative thinking entirely. Sometimes negative thoughts just pop into our mind. When this happens, we must be aware, so that we immediately recognize when we are thinking negatively.",
+				"Change the negative thought into a positive one. If you’re worried and focusing on what could go wrong in a situation, change your thoughts to what could go right. Your mind can only think one thought at a time, so changing the negative into a positive eliminates the negative.",
+				"Remind yourself: a negative thought is just a negative thought. A thought has no power other than what you give it. Negative thoughts gain momentum when you think them over and over again. So stop thinking them.The key is to catch the negatives before they have time to become entrenched. With practice you will notice right away when you are thinking negatives, and you then can take the appropriate actions. The mind is a creature of habit, so encourage positive thoughts and eliminate negative ones.",
+				"The two keys for seeing success with mind power are repetition and regularity. Meaning it is much better to practice for five minutes every day, than for half an hour twice a week. Through the study of neuroplasticity, science has proven that short, regular intervals of practice imprint quicker and have a more lasting effect than irregular attempts. The lesson here is simple; have a daily practice.",
+				"There are few tips to get a happy and healthly minds. First is Meditation .first thing in the morning is also a great time to meditate. When you meditate, you are giving your mind time to clear, reformat itself for all the new information that is going to be taken in the following day, or day ahead. Next is Surround yourself with people who give you opportunities to grow., Eat healthy, Spend your time doing something you LOVE",
+				"To get a happy mind follow these steps. 1.Each day eat a healthy diet that includes the six Ayurvedic tastes and a wide variety of colorful fruits and vegetables. 2.Move your body: Engage in daily exercise. 3.Take time for restful sleep. 4.Release emotional toxins. 5.Cultivate loving relationships. Last and the most important one is Enjoy a good belly-laugh at least once a day. ",
+				"If you find it difficult to let go of your thoughts, try counting slowly as you breathe. Watch your thoughts and try to resist following them. Turn your attention to the count as you breathe out. As you work and think, try to keep your attention on the task at hand. Be strict with yourself and each time your mind wanders, return it to the task. As you keep refocusing your attention, your “mind stillness” will improve.",
+				"Try to find interest in projects to help you concentrate. Taking up a new hobby can be a tremendous help. You should also try to find something interesting even in the dullest chore. If you are at a gathering, find someone and start a conversation. Be inquisitive and you might discover you have similar interests.",
+				"Just as strength, stamina and flexibility must be incorporated in your physical routine, the mind needs new and absorbing challenges to give it a change from its everyday journey. Notice something new on the same way home that you might not have noticed before. Buy a magazine on a subject you normally wouldn’t look at, read it, and open yourself to new possibilities."
+           ],
+            "SKILL_NAME" : "Mysteries human mind",
+            "GET_FACT_MESSAGE" : "Here's your fact: ",
+            "HELP_MESSAGE" : "You can say tell me a human mind fact, or, you can say exit... What can I help you with?",
+            "HELP_REPROMPT" : "What can I help you with?",
+            "STOP_MESSAGE" : "Goodbye!"
         }
     },
     "en-US": {
         "translation": {
-            "QUESTIONS" : questions["QUESTIONS_EN_US"],
-            "GAME_NAME" : "Database Quiz Master" // Be sure to change this for your skill.
+            "FACTS": [
+				"The mind is typically defined as the organized totality or system of all mental processes or psychic activities of an individual.",
+				"Many philosophers hold that the brain is a detector of the mind and that the mind is an inner, subjective state of consciousness.",
+				"Philosophers have used a variety of metaphors to describe the mind, including a blank sheet, a hydraulic device with different forces operating in it, or a television switchboard.",
+				"Attempts to understand the mind go back at least to the ancient Greeks. Plato, for example, believed that the mind acquired knowledge through virtue, independently of sense experience. Descartes and Leibniz also believed the mind gained knowledge through thinking and reasoning—or, in other words, rationalism.",
+				"In contrast to rationalists, empiricists, such as Aristotle, John Locke, and David Hume, believe that the mind gains knowledge from experience.",
+				"Brand names have a strong influence on the mind. In one study, a group of experimenters were given unlabeled samples of both Pepsi and Coke. Not a single tester could tell the difference between the two. The test was repeated with the correct labels attached. Three out of the four testers chose Coke. In fact, the Coke label activated parts of the brain associated with the mind (memory, self-image, and culture) that the Pepsi label didn’t.",
+				"Scientists are unsure if other types of animals have a mind or if some man-made machines could ever possess a mind.",
+				"Combining both rationalism and empiricism, Kant argued that human knowledge depends on both sense experience and innate capacities of the mind.",
+				"Historically, there have been three major schools of thought that describe the relationship of the brain and the mind: 1) dualism, which holds that the mind exists independently from the brain; 2) materialism, which argues that the mind is identical to the physical processes of the brain; and 3) idealism, which posits that only mental phenomena exist.",
+				"Scientists propose that the human mind evolved largely through the sexual choices our ancestors made, similar to the way a peacock’s tail evolved through sexual selection.",
+				"Most scientists argue that there is no evidence that playing classical music to babies increases the power of their mind. However, children who learn to play a musical instrument can develop their mental skills further than those who don’t learn a musical instrument.",
+				"Early-life stress negatively affects the mind. Abuse, neglect, and harsh or inconsistent discipline in early life increases the risk of depression and anxiety as well as obesity, diabetes, hypertension, and heart disease.",
+				"The term “mind” is from the Old English gemynd, or “memory,” and the Proto-Indo-European verbal root *men-, meaning “to think, remember.” The use of “mind” to refer to all mental faculties, thought, feelings, memory, and volition developed gradually over the 14th and 15th centuries.",
+				"Buddha described the mind as being filled with drunken monkeys who jumped, screeched, and chatted endlessly. Fear, according to Buddha, was an especially loud monkey. Buddha taught meditation as a way to tame the “drunken monkeys” in the mind.",
+				"The NSF estimates that a human brain produces as many as 12,000 to 50,000 thoughts per day, depending on how deep a thinker a person is. Most of the so-called random daily thoughts are about our social environment and ourselves.",
+				"In my opinion, there is no aspect of reality beyond the reach of the human mind said by Stephan Hawking ",
+				"A group of scientists from Cal Tech and UCLA have developed a way for epilepsy patients who have had electrodes implanted inside their brains to control a computer mouse with their minds.",
+				"The Stanford Prison Experiment is an infamous experiment that took average people and randomly assigned them to be either guards or prisoners. After a few days, the prisoners and guards became grossly absorbed in their roles. The experiment revealed how readily the human mind accepts authority and institutional ideologies.",
+				"A single descriptive word can manipulate how the mind remembers an event. For example, in a 1974 experiment, 45 people watched the film of a car accident. Different groups of people were asked how fast the cars were going using different trigger words, such as “hit,” “smashed,” “collided,” bumped,” and “contacted.” The group whose question included the word “smashed” estimated the cars were going 10 mph faster than the group whose word was “contacted.” A week later, when participants were asked about broken glass, those who were asked more forceful trigger words reported that there was broken glass even though there was none.",
+				"Studies show that people are able to group items in short-term memory into roughly seven units that allow them to hold more individual items. Interestingly, many human belief systems have considered the number 7 to be a sacred number.",
+				"Some scientists believe that there may be universal features of the human mind that make it easier for people to believe in a higher power. In fact, brain scans of Franciscan nuns, Tibetan Buddhists, and Pentecostal Christians showed similar activity in their brains during prayer and meditation. Interestingly, both believers and atheists point to brain scans as proof of their positions.",
+				"In 1938, Orson Wells broadcasted an adaption of H.G. Welles’ War of the World on the radio. The broadcast caused mass panic in nearly 3 million of the 6 million listeners. Psychologists note that even highly educated people believed it because it was on the radio and thus “authoritative.” They also note that media manipulation of our minds is a regular art form.",
+				"The mind of a suicidal person perceives time differently. Psychologists have noted that in the mind of suicidal people, time seemed to move significantly slower. The suicidal mind also had a more difficult time thinking about the future. Researchers suggest this helped the person withdraw from thinking about past failures and what was perceived as a hopeless future.",
+				"The mind of a suicidal person tends to focus increasingly on concrete thought, which is often conveyed in suicide notes. For example, suicide notes tend to be more banal and specific, such as “Don’t forget to feed the cat.” Fake suicide notes, however, tend to include more contemplative language, such as “Always be happy.” Psychologists note the suicidal mind is trying to slip into idle mental labor to avoid unpleasant emotions.",
+				"The conscious mind includes sensations, perceptions, memories, feelings, and fantasies inside of our current awareness. The preconscious mind includes those thoughts that we are thinking at the moment but can easily draw into our conscious mind. The subconscious mind is the psychic activity that operates below the level of awareness.",
+				"Studies show that people clean up more if there is a faint smell of cleaning liquid in the air, they become more competitive if they see a briefcase, and they become more cooperative if they glimpse words like “dependable”—all without being aware of the change or what triggered it. Scientists note that this shows how everyday sights, smells, and sounds, can activate the subconscious mind.",
+				"Mind control is the unethical use of manipulative techniques to persuade others to conform to the wishes of the manipulator. It was first recorded during the Korean War.",
+				"Solomon Shereshevsky was a Russian journalist who couldn’t forget. He suffered from synesthesia, a phenomenon in which one sense (for example, vision) stimulates another sense (such as hearing). Solomon’s extreme synesthesia led him to taste, smell, and see vivid images in conjunction with numbers and sounds. Because a single word could trigger a flood of memories and associations, he had a difficult time reading a book or having a simple conversation.",
+				"One of the crueler mind experiments was conducted by psychologist Harry Harlow who studied severe maternal deprivation. He separated a baby monkey from its mother and raised it in a cage with two substitute mothers. One mother was made from wire and had a bottle. The other mother was made from cloth, but didn’t have a bottle. As soon the infant finished nursing, it would cling to the cloth monkey. When the experimenters introduced frightening stimulus into the cage, the monkeys ran to the cloth monkey for protection. The monkeys grew up with severe emotional and behavioral problems.",
+				"When the mind recalls a memory, it’s not the original memory. In fact, the act of remembering is an act of creative reimagination. The put-together memory doesn’t just have a few holes; it also has some entirely new bits pasted in.",
+				"The act of remembering is an act of creative reimagination. The CIA reportedly created a project called Project MK-ULTRA to experiment with mind control using LSD. They even tried to use the drug as a way to completely wipe the memories of retiring CIA agents.",
+				"Scientists believe that the mind forgets in order to avoid information overload, to think more quickly, assimilate new information easier, and to avoid emotional hangovers.",
+				"The human mind has a difficult time differentiating the innate from the environmental. In other words, if the mind is used to interpreting the world a certain way, it expects that the world is that way naturally and unalterably. For example, for many people, the color pink is naturally feminine and blue is naturally male. However, in the 1920s, parents dressed boys in pink because it was a watered down version of red, which was seen as masculine and fierce. Girls were dressed in pale blue because it was associated with the Virgin Mary.",
+				"Research has proven how easy it is to create false memories through the force of suggestion. Psychologists found that if they repeated questions (e.g. hugging Bugs Bunny at Disney World—an impossibility) and invited the mind to imagine sensory detail (do you remember stroking Bugs Bunny’s velvety ears), a person would begin to believe it was an actual event.",
+				"In 1965, a botched circumcision burned away David Reimer’s entire penis. Doctors decided to raise him as a girl, and removed his testicles and fashioned female genitalia. His parents changed his name to Brenda. He finally learned at age 14 that he was a boy, and later committed suicide at age 38. He reported that what they did to his body was not as bad as what they did to his mind.",
+				"More than 100 studies show that about half of crime is largely under genetic control. Environmental factors such as parenting, poverty, and discrimination account for the other half. In other words, nature and nurture are both important in developing the mind.",
+				"During the famous Milgram Experiment (1961), 65% of volunteers gave what they thought was a fatal dose of electric shock to someone when told to do so, even though less than 1% said they would in a pre-experiment survey. The study showed that the human mind does not necessarily operate based on personality but rather on the roles we are asked to play to make society move smoothly.",
+				"The mind can practice new tasks, such as learning a new piece of music during REM sleep. REM sleep also appears to boost performance with tasks involving procedural memory, or the subconscious “how-to” knowledge that a person uses when walking, riding a bike, or performing most physical tasks.",
+				"Most people assume that our conscious mind continues until the end of day and then picks up after we wake up. Scientists argue, however, that dreaming is a phenomenon that’s just as visceral and immediate as consciousness is and that since we spend roughly 20 years asleep, dreams should be considered an alternate reality.",
+				"Advertisers use mind illusions to make their products more appealing. For example, they produce condiment bottles with long necks because the mind is better at judging size than volume. Bottles of maple syrup are narrow at the base but bulge in the middle because that is where a person is most likely to look.",
+				"The moon appears to be much larger than usual when it’s low in the sky because the mind interprets the size of the moon in relation to distant objects and the horizon. But when the moon is high in the sky, the mind has no such frame of reference, and so the moon appears smaller.",
+				"Scientists note that the mind is a giant pattern-making machine. It invents shapes and identifiable things to explain odd patterns in arrangements. The mind can also block out things it wants to ignore, such as the tactile sensation of clothes rubbing on a person’s skin or a person’s own body odor.",
+				"The mind’s power of expectation can blind people to facts and lure them into unwitting conjecture in virtually every way they perceive the world. For example, testers in a study responded differently to an odor that they sniffed out of a test tube depending on whether they were told that it was fancy cheese or human waste.",
+				"Short-term memory is linked to current electrical activity taking place in a person’s neurons, or the pattern of signal transmission that goes through the brain. Long-term memory, however, depends on permanent physical changes in the brain.",
+				"The mind stores memories in different ways, although the boundaries are not always clear cut: short-term memory (working memory), long-term memory (declarative memory), and procedural memory (“how-to” memory associated with physical skills such as shoe tying). Procedural memory is remarkably durable and is even able to survive the ravages of diseases like Alzheimer’s.",
+				"Some researchers argue that the Internet is changing the structure of our brains, which changes the mind’s ability to think and to learn. Specifically, the Internet overstimulates the part of the brain involved in temporary memory so that deep thinking and creativity become increasingly difficult.",
+				"The Internet may be changing the structure of our brains, which changes the mind’s ability to think and to learn",
+				"A human’s eye is able to see fine detail in only a small sliver of its visual field. However, the mind uses saccades (quick, automatic eye movements) to compensate for this weakness. The eye performs two or three saccades each second to give the mind a single, seamless whole. When a person is severely drunk, the saccades slow down, and the mind begins to see the world as the eye perceives it, a patch of sharpness surrounded by a blurry field.",
+				"The placebo (Latin for “I will please”) effect occurs when the mind believes that a certain medication will help them when the medicine in fact has no proven therapeutic effects for a particular condition.",
+				"Studies show that 50-70% of doctor visits can be traced to psychological reasons.",
+				"A study of nearly 1 million students in New York showed that those who ate lunches without preservatives, dyes, and other additives performed 14% better on IQ tests.",
+				"Memories that are triggered by scent have some of the strongest emotional connections and appear more intense than other memory triggers.",
+				"The mind wanders about 30% of the time and sometimes as much as 70%, say, for example, when someone is driving down an uncrowded freeway.",
+				"Researchers found that distorting body image can change the mind’s perception of pain. Subjects who viewed their wounded hands through the wrong end of binoculars, which made their hand look smaller, experienced decreased pain and decreased swelling. However, those who looked at the wounded hand through the right side of the binoculars, which made the hand look larger, experienced increased pain.",
+				"Scientists are unsure why we forget. Scientists are unsure how things are forgotten; in other words, they are unsure what makes a person unable to remember even long-term memories. New research shows that people don’t necessarily forget, they simply lose the ability to retrieve older, rarely visited memories.",
+				"Researchers note that like a mathematical formula, which is a statement about a number represented by a number, the mind trying to understand the nature of the mind introduces a certain paradoxical “loopiness.” Scientists use the famous Escher print of a right hand drawing a left hand that in turn is drawing a right hand as a visual example of this paradox.",
+				"The mind imagines objects slightly from above and tilted. For example, researchers asked people around the world to draw a coffee cup. Almost everyone drew a coffee cup from a perspective slightly above the cup looking down and offset a little to the right or left. No one drew it looking straight down from above. This uniformity in perspective has been dubbed the canonical perspective.",
+				"The law of attraction is not a new idea. It has always been here from ancient times, and people have always used it.Hunters, who painted scenes of hunting on the walls of caves thousands of years ago, used the law of attraction, as well as contemporary businessmen, who visualize what they wish to accomplish. You use it too, whenever you think, make plans or daydream.",
+				"Use visualization to learn a new skill. Neuroplasticity is the ability of the brain to continuously create new neural pathways. When we repeat a skill that we are trying to master, we strengthen the neural networks that represent that action. The same happens physically in the brain whether we perform the action, or simply visualize it—Your brain cannot tell the difference between an action you performed and an action you visualized.So take the time to add visualization as part of your rehearsals of anything you are trying to master, such as delivering a flawless presentation?",
+				"Achieve your goals by keeping your mouth shut. Psychology tests have proven that when you tell someone your goal, and they acknowledge it, you are less likely to do the work to realize that goal. This is because your brain mistakes the talking for the doing—that is, the gratification that the social acknowledgment brings tricks your brain into feeling that the goal has already been accomplished. The satisfaction you experience in the telling removes the motivation to do whatever it takes to actually make it happen.Heed this information and keep your goals to yourself. It might just spur you to work harder to achieve an important goal.",
+				"Smile to improve your mood. The Facial Feedback Hypothesis indicates that facial expressions representative of an emotion trigger changes in your body that are similar to those that happen when you experience the actual emotion. For example, your brain cannot tell the difference between a posed smile or a genuine smile. A posed smile will elicit, physiologically, the same pleasure or happiness response as a genuine smile. Your facial muscles cue your brain to experience that positive emotion. Taking notice of this, consider how this information can help you to regulate some of your emotional reactions by controlling your facial expressions. Try this the next time you are in a bad mood: Instead of frowning, which reinforces a negative mood, consider smiling. Research has shown that by doing so, you are likely to experience a more positive mood.",
+				"Understand the physiology of emotional pain to develop empathy. Research at the Department of Psychological Sciences at Purdue University discovered that social or emotional pain is as real and intense as physical pain. The same brain networks are activated when a person experiences a physical injury as when they go through a painful emotional experience. Your brain cannot distinguish between physical and emotional pain.Consider for a moment that when we hurt someone emotionally, it may very well be the equivalent of breaking one of their bones. We can create a better world in our sphere of influence just by being mindful of this thought and using it to help develop our empathy towards others.",
+				"Lower your stress level by managing your thoughts. There is ample research proving that your brain cannot tell the difference between a real and imagined threat; the physical response is the same.",
+				"A 10 second strategy helps to Transcend Stress, Achieve Optimal Brain Function, and Maximize Your Creative Intelligence.This 10-second strategy works because it creates a distraction from the primitive brain where fear resides. Lets try now. Imagine that there is a button in the center of your left palm; imagine that this button, when pressed, will send a signal to your brain to stop the fearful thinking.Press the button with your right hand as you become aware of your breath.Take three easy breaths counting them out.Imagine a different color for each number.As you exhale, relax in the present moment.",
+				"Whatever you desire, you can achieve it using Mind Power.All physical reality is made up of vibrations of energy; even your thoughts are vibrations of energy. While it sounds like a concept or theory, this is a new reality that quantum physics has revealed to us. Your thoughts have a powerful influence on your life.",
+				"Your thoughts affect what happens to you. Most of us go through life taking little notice of our thought processes: how the mind thinks, what it fears, what it heeds, what it says to itself, what it brushes aside. For the most part, we go about your lives with minimal attention paid to how we think. We go through life neglecting one of the most important and powerful forces in our life: our thoughts.",
+				"What you focus on, you attract. Mind Power is directing your thoughts towards a desired outcome. Focus on success and you attract success. Focus on fear and failure and you attract failure. Mind Power is understanding these principles and making our thoughts work for us. Your thoughts are the primary creative forces in your life. Use them consciously and you will awaken to a whole new life of power and opportunity.",
+				"A new life is but a new mind. In order to make changes in your life, you must change the way you use your mind. You cannot think both negative and positive thoughts at the same time, as one will always dominate the other. As humans, we’re creatures of habit, and so are our minds. We must make sure empowering thoughts and positive emotions are the dominating influence in the mind.",
+				"To change the external, you must change the internal. Most people forget this step. They try to change external conditions by working directly on those conditions but this almost always proves futile or temporary, unless it is accompanied by a change of thoughts and beliefs. Train your conscious mind to think thoughts of success, happiness, health, and prosperity. Learn to weed out negativity such as fear and worry. Keep your conscious mind busy with the expectation of the best, and make sure the thoughts you habitually think are based upon what you want in your life.",
+				"We all know we have a subconscious, but for most of us, our knowledge of it ends there. Your subconscious mind is a second, hidden mind that exists within you. It interprets and acts upon the predominating thoughts that reside within your conscious mind, and its goal is to attract circumstances and situations that match the images you have within.",
+				"We reap what we sow. Think of your subconscious mind as incredibly fertile soil that will grow any seed you plant in it. Your habitual thoughts and beliefs are seeds that are being constantly sown. Just as corn kernels produce corn and wheat seeds produce wheat, the contents of your thoughts will have an effect in your life. You will reap what you sow; this is a law.",
+				"Your conscious mind is like the gardener that tends to the soil. It’s your responsibility to be aware of how this process works, choosing wisely what reaches the inner garden — your subconscious. For most, our role as gardener has never been explained. By not knowing this role, we have allowed seeds of all types – good and bad – to enter our subconscious.",
+				"The subconscious doesn’t discriminate, judge, or censor. It will manifest success, abundance, and health just as easily as failure, ill health, and misfortune. Your subconscious accepts what is impressed upon it with feeling and repetition, whether these thoughts are positive or negative. It does not evaluate things like your conscious mind does. This is why it is so important to be aware of what you are thinking.",
+				"Once you understand that your subconscious will bring you what you need or desire, and you begin working daily to project thoughts and images of what you want, seemingly chance-events will start happening to you. To the untrained mind, synchronicity appears to to be coincidence or luck, but it is neither. It is simply the operation of the forces you have set into motion with your thoughts. This powerful inner collaborator, working with your conscious mind, will bring to you the people and circumstances you require to achieve your goals.",
+				"We are all part of the greater whole.Modern physics sees the universe as a vast, inseparable web of dynamic activity. Not only is the universe alive and constantly changing, but everything in the universe affects everything else. At its most primary level, the universe seems to be whole and undifferentiated, a fathomless sea of energy that permeates every object and every act. It is all one. Scientists are now confirming what mystics and seers have been telling us for thousands of years: we are not separate from, but part of one greater whole.",
+				"Everything in the universe is made up of energy. Everything from the items in your home, to the events that happen to you, and even our thoughts are made up of vibrations of energy. This means our thoughts are made of the exact same substance as the building blocks of the universe. Knowing this, we can use it to our advantage.",
+				"In the past, it might have seemed unbelievable that we could create our reality through this process. But now we know how to do it, and why it works. Since our thoughts are energy, it only makes sense that repeated images, affirmations, deeply held beliefs, fears and desires would have an effect on our own reality by vibrating within the larger web of reality. In fact, if we are all connected, how could it be otherwise?",
+				"We live in an immense quantum sea of vibrating energy that is responsive to how and what we think. Our thoughts are creative forces and are constantly expressing themselves in our lives. Once we realize this, we can begin designing our lives with clarity and purpose. The Mind Power system consists of easily learned techniques that help you focus and direct your thoughts, and the first technique is visualization.",
+				"Visualization is simply a mental rehearsal. You create images in your mind of having or doing whatever it is that you want. You then repeat these images over and over again, daily for about five minutes a day. In your five-minute practice, use your imagination to see yourself being successful in whatever goal you may have.",
+				"What you focus on, you attract. The key to visualizing is to always visualize that you already have what you desire. This is a mental trick. Rather than hoping you will achieve it, or building confidence that one day it will happen, live and feel it as if it is happening to you now. On one level you know this is just a mental trick, but the subconscious mind cannot distinguish between what is real and what is imagined. Your subconscious will act upon the images you create within, whether they reflect your current reality or not. John Kehoe has taught this skill to millions of people worldwide who have seen results. It’s not magic, and it doesn’t happen overnight, but if you persist in your vision, you will be successful.Whatever your definition of success is, you can achieve it.  You can achieve anything you put your mind to, once you understand Mind Power.",
+				"Affirmations are statements that you say either out loud, or quietly to yourself. By doing this, you affirm to yourself whatever it is that you desire. For example, if you have an important interview coming up, you could affirm to yourself that you will have a great interview.",
+				"Why Mind Power affirmations work. When you verbalize something and repeat it to yourself, it will influence your thoughts. This is why affirmations are successful. If you say to yourself, “I will have a great interview”, you will automatically begin thinking about your upcoming interview as a great interview. What you focus on, you attract so begin using affirmations to focus on what you desire.",
+				"Always affirm the positive. Avoid asking yourself, “What if it’s a terrible interview?” or thinking things like, “I’m so nervous”. These statements focus on the opposite of what you want. Be positive, and use words that reflect what you want to happen. If you want to be confident, use that word in your affirmation.",
+				"Make your affirmations short and simple. Use a short phrase, or one sentence at the most. Your affirmation should be like a simple mantra that you can repeat over and over again, without thinking.",
+				"Don’t force yourself to believe it. Just say it. You don’t need to force yourself to believe your affirmation, simply repeat it over and over and it will naturally have an effect on you. Repeating the statement many times will cause it to work for you.",
+				"Affirmations are simple, easy to use, and very powerful. Many professional athletes use them to perform well.  Successful business people use them to close deals and run their businesses, and artists use them to be creative and come up with innovative ideas. You can use them too, in any area of your life.",
+				"They say nothing succeeds like success, and it’s true. Success vibration acts like a magnet that attracts success and opportunities to you. When you think and feel success, you vibrate with success energy and act accordingly.",
+				"People who are already successful have momentum on their side; the law of attraction is already working for them. They attract even greater success because of the nature of their predominant thoughts. The success vibration is a great asset to someone who is already successful. If you are not yet successful, there’s no need to worry. There are many Mind Power techniques you can use to create a success vibration. One of them is the technique of acknowledging.",
+				"One of the mind Power techniques you can use to create a success vibration is acknowledging. This technique begins with searching for areas of your life where you are already successful. Unfortunately most of us are quicker to see our own failures and shortcomings than we are to acknowledge our success. To create a success vibration you must change this self-deprecating habit and become success-focused.",
+				"Examine your personal qualities and present situation and find things to feel successful about. Are you a good friend to someone? Are you positive? Are you generous? Do you dress well? Are you a safe driver? You are not limited to a narrow definition of success such as someone who is rich, famous, and good-looking. There are literally hundreds of other aspects of your life that are equally important; the key is to find aspects that help us feel successful in our own lives. This is one way to create a success vibration.",
+				"Create a success vibration and you’ll attract success. Start by creating an acknowledging list. Your list can be either general or specific. For example, let’s say you’re an entrepreneur building your business. You might make a specific acknowledging list that highlights the qualities you possess which will help you succeed in that role, such as: I’m a good communicator, I have great people skills, I’m a great leader, etc. By focusing on this list you are building a specific success vibration. The same principle works whether you’re closing a multi-million-dollar deal, getting an entry-level job, or finding the perfect partner.",
+				"You can’t avoid negative thinking entirely. Sometimes negative thoughts just pop into our mind. When this happens, we must be aware, so that we immediately recognize when we are thinking negatively.",
+				"Change the negative thought into a positive one. If you’re worried and focusing on what could go wrong in a situation, change your thoughts to what could go right. Your mind can only think one thought at a time, so changing the negative into a positive eliminates the negative.",
+				"Remind yourself: a negative thought is just a negative thought. A thought has no power other than what you give it. Negative thoughts gain momentum when you think them over and over again. So stop thinking them.The key is to catch the negatives before they have time to become entrenched. With practice you will notice right away when you are thinking negatives, and you then can take the appropriate actions. The mind is a creature of habit, so encourage positive thoughts and eliminate negative ones.",
+				"The two keys for seeing success with mind power are repetition and regularity. Meaning it is much better to practice for five minutes every day, than for half an hour twice a week. Through the study of neuroplasticity, science has proven that short, regular intervals of practice imprint quicker and have a more lasting effect than irregular attempts. The lesson here is simple; have a daily practice.",
+				"There are few tips to get a happy and healthly minds. First is Meditation .first thing in the morning is also a great time to meditate. When you meditate, you are giving your mind time to clear, reformat itself for all the new information that is going to be taken in the following day, or day ahead. Next is Surround yourself with people who give you opportunities to grow., Eat healthy, Spend your time doing something you LOVE",
+				"To get a happy mind follow these steps. 1.Each day eat a healthy diet that includes the six Ayurvedic tastes and a wide variety of colorful fruits and vegetables. 2.Move your body: Engage in daily exercise. 3.Take time for restful sleep. 4.Release emotional toxins. 5.Cultivate loving relationships. Last and the most important one is Enjoy a good belly-laugh at least once a day. ",
+				"If you find it difficult to let go of your thoughts, try counting slowly as you breathe. Watch your thoughts and try to resist following them. Turn your attention to the count as you breathe out. As you work and think, try to keep your attention on the task at hand. Be strict with yourself and each time your mind wanders, return it to the task. As you keep refocusing your attention, your “mind stillness” will improve.",
+				"Try to find interest in projects to help you concentrate. Taking up a new hobby can be a tremendous help. You should also try to find something interesting even in the dullest chore. If you are at a gathering, find someone and start a conversation. Be inquisitive and you might discover you have similar interests.",
+				"Just as strength, stamina and flexibility must be incorporated in your physical routine, the mind needs new and absorbing challenges to give it a change from its everyday journey. Notice something new on the same way home that you might not have noticed before. Buy a magazine on a subject you normally wouldn’t look at, read it, and open yourself to new possibilities."
+            ],
+            "SKILL_NAME" : "Mysteries human mind"
         }
     },
     "en-GB": {
         "translation": {
-            "QUESTIONS" : questions["QUESTIONS_EN_GB"],
-            "GAME_NAME" : "Database Quiz Master" // Be sure to change this for your skill.
+            "FACTS": [
+                "A year on Mercury is just 88 days long.",
+                "Despite being farther from the Sun, Venus experiences higher temperatures than Mercury.",
+                "Venus rotates anti-clockwise, possibly because of a collision in the past with an asteroid.",
+                "On Mars, the Sun appears about half the size as it does on Earth.",
+                "Earth is the only planet not named after a god.",
+                "Jupiter has the shortest day of all the planets.",
+                "The Milky Way galaxy will collide with the Andromeda Galaxy in about 5 billion years.",
+                "The Sun contains 99.86% of the mass in the Solar System.",
+                "The Sun is an almost perfect sphere.",
+                "A total solar eclipse can happen once every 1 to 2 years. This makes them a rare event.",
+                "Saturn radiates two and a half times more energy into space than it receives from the sun.",
+                "The temperature inside the Sun can reach 15 million degrees Celsius.",
+                "The Moon is moving approximately 3.8 cm away from our planet every year."
+            ],
+            "SKILL_NAME" : "Mysteries human mind"
         }
     },
     "de": {
         "translation": {
-            "QUESTIONS" : questions["QUESTIONS_DE_DE"],
-            "GAME_NAME" : "Wissenswertes über Rentiere in Deutsch", // Be sure to change this for your skill.
-            "HELP_MESSAGE": "Ich stelle dir %s Multiple-Choice-Fragen. Antworte mit der Zahl, die zur richtigen Antwort gehört. " +
-            "Sage beispielsweise eins, zwei, drei oder vier. Du kannst jederzeit ein neues Spiel beginnen, sage einfach „Spiel starten“. ",
-            "REPEAT_QUESTION_MESSAGE": "Wenn die letzte Frage wiederholt werden soll, sage „Wiederholen“ ",
-            "ASK_MESSAGE_START": "Möchten Sie beginnen?",
-            "HELP_REPROMPT": "Wenn du eine Frage beantworten willst, antworte mit der Zahl, die zur richtigen Antwort gehört. ",
-            "STOP_MESSAGE": "Möchtest du weiterspielen?",
-            "CANCEL_MESSAGE": "OK, dann lass uns bald mal wieder spielen.",
-            "NO_MESSAGE": "OK, spielen wir ein andermal. Auf Wiedersehen!",
-            "TRIVIA_UNHANDLED": "Sagt eine Zahl beispielsweise zwischen 1 und %s",
-            "HELP_UNHANDLED": "Sage ja, um fortzufahren, oder nein, um das Spiel zu beenden.",
-            "START_UNHANDLED": "Du kannst jederzeit ein neues Spiel beginnen, sage einfach „Spiel starten“.",
-            "NEW_GAME_MESSAGE": "Willkommen bei %s. ",
-            "WELCOME_MESSAGE": "Ich stelle dir %s Fragen und du versuchst, so viele wie möglich richtig zu beantworten. " +
-            "Sage einfach die Zahl, die zur richtigen Antwort passt. Fangen wir an. ",
-            "ANSWER_CORRECT_MESSAGE": "Richtig. ",
-            "ANSWER_WRONG_MESSAGE": "Falsch. ",
-            "CORRECT_ANSWER_MESSAGE": "Die richtige Antwort ist %s: %s. ",
-            "ANSWER_IS_MESSAGE": "Diese Antwort ist ",
-            "TELL_QUESTION_MESSAGE": "Frage %s. %s ",
-            "GAME_OVER_MESSAGE": "Du hast %s von %s richtig beantwortet. Danke fürs Mitspielen!",
-            "SCORE_IS_MESSAGE": "Dein Ergebnis ist %s. "
+            "FACTS": [
+                "Ein Jahr dauert auf dem Merkur nur 88 Tage.",
+                "Die Venus ist zwar weiter von der Sonne entfernt, hat aber höhere Temperaturen als Merkur.",
+                "Venus dreht sich entgegen dem Uhrzeigersinn, möglicherweise aufgrund eines früheren Zusammenstoßes mit einem Asteroiden.",
+                "Auf dem Mars erscheint die Sonne nur halb so groß wie auf der Erde.",
+                "Die Erde ist der einzige Planet, der nicht nach einem Gott benannt ist.",
+                "Jupiter hat den kürzesten Tag aller Planeten.",
+                "Die Milchstraßengalaxis wird in etwa 5 Milliarden Jahren mit der Andromeda-Galaxis zusammenstoßen.",
+                "Die Sonne macht rund 99,86 % der Masse im Sonnensystem aus.",
+                "Die Sonne ist eine fast perfekte Kugel.",
+                "Eine Sonnenfinsternis kann alle ein bis zwei Jahre eintreten. Sie ist daher ein seltenes Ereignis.",
+                "Der Saturn strahlt zweieinhalb mal mehr Energie in den Weltraum aus als er von der Sonne erhält.",
+                "Die Temperatur in der Sonne kann 15 Millionen Grad Celsius erreichen.",
+                "Der Mond entfernt sich von unserem Planeten etwa 3,8 cm pro Jahr."
+            ],
+            "SKILL_NAME" : "Weltraumwissen auf Deutsch",
+            "GET_FACT_MESSAGE" : "Hier sind deine Fakten: ",
+            "HELP_MESSAGE" : "Du kannst sagen, „Nenne mir einen Fakt über den Weltraum“, oder du kannst „Beenden“ sagen... Wie kann ich dir helfen?",
+            "HELP_REPROMPT" : "Wie kann ich dir helfen?",
+            "STOP_MESSAGE" : "Auf Wiedersehen!"
         }
     }
 };
-
-var Alexa = require("alexa-sdk");
-var APP_ID = "amzn1.ask.skill.48d7a996-876a-450d-a2a3-8ee19ac98878";  // TODO replace with your app ID (OPTIONAL).
 
 exports.handler = function(event, context, callback) {
     var alexa = Alexa.handler(event, context);
-    alexa.appId = APP_ID;
+    alexa.APP_ID = APP_ID;
     // To enable string internationalization (i18n) features, set a resources object.
-    alexa.resources = languageString;
-    alexa.registerHandlers(newSessionHandlers, startStateHandlers, triviaStateHandlers, helpStateHandlers);
+    alexa.resources = languageStrings;
+    alexa.registerHandlers(handlers);
     alexa.execute();
 };
 
-var newSessionHandlers = {
-    "LaunchRequest": function () {
-        this.handler.state = GAME_STATES.START;
-        this.emitWithState("StartGame", true);
+var handlers = {
+    'LaunchRequest': function () {
+        this.emit('GetFact');
     },
-    "AMAZON.StartOverIntent": function() {
-        this.handler.state = GAME_STATES.START;
-        this.emitWithState("StartGame", true);
+    'GetNewFactIntent': function () {
+        this.emit('GetFact');
     },
-    "AMAZON.HelpIntent": function() {
-        this.handler.state = GAME_STATES.HELP;
-        this.emitWithState("helpTheUser", true);
+    'GetFact': function () {
+        // Get a random space fact from the space facts list
+        // Use this.t() to get corresponding language data
+        var factArr = this.t('FACTS');
+        var factIndex = Math.floor(Math.random() * factArr.length);
+        var randomFact = factArr[factIndex];
+
+        // Create speech output
+        var speechOutput = this.t("GET_FACT_MESSAGE") + randomFact;
+        this.emit(':tellWithCard', speechOutput, this.t("SKILL_NAME"), randomFact)
     },
-    "Unhandled": function () {
-        var speechOutput = this.t("START_UNHANDLED");
-        this.emit(":ask", speechOutput, speechOutput);
+    'AMAZON.HelpIntent': function () {
+        var speechOutput = this.t("HELP_MESSAGE");
+        var reprompt = this.t("HELP_MESSAGE");
+        this.emit(':ask', speechOutput, reprompt);
+    },
+    'AMAZON.CancelIntent': function () {
+        this.emit(':tell', this.t("STOP_MESSAGE"));
+    },
+    'AMAZON.StopIntent': function () {
+        this.emit(':tell', this.t("STOP_MESSAGE"));
     }
 };
-
-var startStateHandlers = Alexa.CreateStateHandler(GAME_STATES.START, {
-    "StartGame": function (newGame) {
-        var speechOutput = newGame ? this.t("NEW_GAME_MESSAGE", this.t("GAME_NAME")) + this.t("WELCOME_MESSAGE", GAME_LENGTH.toString()) : "";
-        // Select GAME_LENGTH questions for the game
-        var translatedQuestions = this.t("QUESTIONS");
-        var gameQuestions = populateGameQuestions(translatedQuestions);
-        // Generate a random index for the correct answer, from 0 to 3
-        var correctAnswerIndex = Math.floor(Math.random() * (ANSWER_COUNT));
-        // Select and shuffle the answers for each question
-        var roundAnswers = populateRoundAnswers(gameQuestions, 0, correctAnswerIndex, translatedQuestions);
-        var currentQuestionIndex = 0;
-        var spokenQuestion = Object.keys(translatedQuestions[gameQuestions[currentQuestionIndex]])[0];
-        var repromptText = this.t("TELL_QUESTION_MESSAGE", "1", spokenQuestion);
-
-        for (var i = 0; i < ANSWER_COUNT; i++) {
-            repromptText += (i+1).toString() + ". " + roundAnswers[i] + ". ";
-        }
-
-        speechOutput += repromptText;
-
-        Object.assign(this.attributes, {
-            "speechOutput": repromptText,
-            "repromptText": repromptText,
-            "currentQuestionIndex": currentQuestionIndex,
-            "correctAnswerIndex": correctAnswerIndex + 1,
-            "questions": gameQuestions,
-            "score": 0,
-            "correctAnswerText": translatedQuestions[gameQuestions[currentQuestionIndex]][Object.keys(translatedQuestions[gameQuestions[currentQuestionIndex]])[0]][0]
-        });
-
-        // Set the current state to trivia mode. The skill will now use handlers defined in triviaStateHandlers
-        this.handler.state = GAME_STATES.TRIVIA;
-        this.emit(":askWithCard", speechOutput, repromptText, this.t("GAME_NAME"), repromptText);
-    }
-});
-
-var triviaStateHandlers = Alexa.CreateStateHandler(GAME_STATES.TRIVIA, {
-    "AnswerIntent": function () {
-        handleUserGuess.call(this, false);
-    },
-    "DontKnowIntent": function () {
-        handleUserGuess.call(this, true);
-    },
-    "AMAZON.StartOverIntent": function () {
-        this.handler.state = GAME_STATES.START;
-        this.emitWithState("StartGame", false);
-    },
-    "AMAZON.RepeatIntent": function () {
-        this.emit(":ask", this.attributes["speechOutput"], this.attributes["repromptText"]);
-    },
-    "AMAZON.HelpIntent": function () {
-        this.handler.state = GAME_STATES.HELP;
-        this.emitWithState("helpTheUser", false);
-    },
-    "AMAZON.StopIntent": function () {
-        this.handler.state = GAME_STATES.HELP;
-        var speechOutput = this.t("STOP_MESSAGE");
-        this.emit(":ask", speechOutput, speechOutput);
-    },
-    "AMAZON.CancelIntent": function () {
-        this.emit(":tell", this.t("CANCEL_MESSAGE"));
-    },
-    "Unhandled": function () {
-        var speechOutput = this.t("TRIVIA_UNHANDLED", ANSWER_COUNT.toString());
-        this.emit(":ask", speechOutput, speechOutput);
-    },
-    "SessionEndedRequest": function () {
-        console.log("Session ended in trivia state: " + this.event.request.reason);
-    }
-});
-
-var helpStateHandlers = Alexa.CreateStateHandler(GAME_STATES.HELP, {
-    "helpTheUser": function (newGame) {
-        var askMessage = newGame ? this.t("ASK_MESSAGE_START") : this.t("REPEAT_QUESTION_MESSAGE") + this.t("STOP_MESSAGE");
-        var speechOutput = this.t("HELP_MESSAGE", GAME_LENGTH) + askMessage;
-        var repromptText = this.t("HELP_REPROMPT") + askMessage;
-        this.emit(":ask", speechOutput, repromptText);
-    },
-    "AMAZON.StartOverIntent": function () {
-        this.handler.state = GAME_STATES.START;
-        this.emitWithState("StartGame", false);
-    },
-    "AMAZON.RepeatIntent": function () {
-        var newGame = (this.attributes["speechOutput"] && this.attributes["repromptText"]) ? false : true;
-        this.emitWithState("helpTheUser", newGame);
-    },
-    "AMAZON.HelpIntent": function() {
-        var newGame = (this.attributes["speechOutput"] && this.attributes["repromptText"]) ? false : true;
-        this.emitWithState("helpTheUser", newGame);
-    },
-    "AMAZON.YesIntent": function() {
-        if (this.attributes["speechOutput"] && this.attributes["repromptText"]) {
-            this.handler.state = GAME_STATES.TRIVIA;
-            this.emitWithState("AMAZON.RepeatIntent");
-        } else {
-            this.handler.state = GAME_STATES.START;
-            this.emitWithState("StartGame", false);
-        }
-    },
-    "AMAZON.NoIntent": function() {
-        var speechOutput = this.t("NO_MESSAGE");
-        this.emit(":tell", speechOutput);
-    },
-    "AMAZON.StopIntent": function () {
-        var speechOutput = this.t("STOP_MESSAGE");
-        this.emit(":ask", speechOutput, speechOutput);
-    },
-    "AMAZON.CancelIntent": function () {
-        this.emit(":tell", this.t("CANCEL_MESSAGE"));
-    },
-    "Unhandled": function () {
-        var speechOutput = this.t("HELP_UNHANDLED");
-        this.emit(":ask", speechOutput, speechOutput);
-    },
-    "SessionEndedRequest": function () {
-        console.log("Session ended in help state: " + this.event.request.reason);
-    }
-});
-
-function handleUserGuess(userGaveUp) {
-    var answerSlotValid = isAnswerSlotValid(this.event.request.intent);
-    var speechOutput = "";
-    var speechOutputAnalysis = "";
-    var gameQuestions = this.attributes.questions;
-    var correctAnswerIndex = parseInt(this.attributes.correctAnswerIndex);
-    var currentScore = parseInt(this.attributes.score);
-    var currentQuestionIndex = parseInt(this.attributes.currentQuestionIndex);
-    var correctAnswerText = this.attributes.correctAnswerText;
-    var translatedQuestions = this.t("QUESTIONS");
-
-    if (answerSlotValid && parseInt(this.event.request.intent.slots.Answer.value) == this.attributes["correctAnswerIndex"]) {
-        currentScore++;
-        speechOutputAnalysis = this.t("ANSWER_CORRECT_MESSAGE");
-    } else {
-        if (!userGaveUp) {
-            speechOutputAnalysis = this.t("ANSWER_WRONG_MESSAGE");
-        }
-
-        speechOutputAnalysis += this.t("CORRECT_ANSWER_MESSAGE", correctAnswerIndex, correctAnswerText);
-    }
-
-    // Check if we can exit the game session after GAME_LENGTH questions (zero-indexed)
-    if (this.attributes["currentQuestionIndex"] == GAME_LENGTH - 1) {
-        speechOutput = userGaveUp ? "" : this.t("ANSWER_IS_MESSAGE");
-        speechOutput += speechOutputAnalysis + this.t("GAME_OVER_MESSAGE", currentScore.toString(), GAME_LENGTH.toString());
-
-        this.emit(":tell", speechOutput)
-    } else {
-        currentQuestionIndex += 1;
-        correctAnswerIndex = Math.floor(Math.random() * (ANSWER_COUNT));
-        var spokenQuestion = Object.keys(translatedQuestions[gameQuestions[currentQuestionIndex]])[0];
-        var roundAnswers = populateRoundAnswers.call(this, gameQuestions, currentQuestionIndex, correctAnswerIndex, translatedQuestions);
-        var questionIndexForSpeech = currentQuestionIndex + 1;
-        var repromptText = this.t("TELL_QUESTION_MESSAGE", questionIndexForSpeech.toString(), spokenQuestion);
-
-        for (var i = 0; i < ANSWER_COUNT; i++) {
-            repromptText += (i+1).toString() + ". " + roundAnswers[i] + ". "
-        }
-
-        speechOutput += userGaveUp ? "" : this.t("ANSWER_IS_MESSAGE");
-        speechOutput += speechOutputAnalysis + this.t("SCORE_IS_MESSAGE", currentScore.toString()) + repromptText;
-
-        Object.assign(this.attributes, {
-            "speechOutput": repromptText,
-            "repromptText": repromptText,
-            "currentQuestionIndex": currentQuestionIndex,
-            "correctAnswerIndex": correctAnswerIndex + 1,
-            "questions": gameQuestions,
-            "score": currentScore,
-            "correctAnswerText": translatedQuestions[gameQuestions[currentQuestionIndex]][Object.keys(translatedQuestions[gameQuestions[currentQuestionIndex]])[0]][0]
-        });
-
-        this.emit(":askWithCard", speechOutput, repromptText, this.t("GAME_NAME"), repromptText);
-    }
-}
-
-function populateGameQuestions(translatedQuestions) {
-    var gameQuestions = [];
-    var indexList = [];
-    var index = translatedQuestions.length;
-
-    if (GAME_LENGTH > index){
-        throw new Error("Invalid Game Length.");
-    }
-
-    for (var i = 0; i < translatedQuestions.length; i++){
-        indexList.push(i);
-    }
-
-    // Pick GAME_LENGTH random questions from the list to ask the user, make sure there are no repeats.
-    for (var j = 0; j < GAME_LENGTH; j++){
-        var rand = Math.floor(Math.random() * index);
-        index -= 1;
-
-        var temp = indexList[index];
-        indexList[index] = indexList[rand];
-        indexList[rand] = temp;
-        gameQuestions.push(indexList[index]);
-    }
-
-    return gameQuestions;
-}
-
-/**
- * Get the answers for a given question, and place the correct answer at the spot marked by the
- * correctAnswerTargetLocation variable. Note that you can have as many answers as you want but
- * only ANSWER_COUNT will be selected.
- * */
-function populateRoundAnswers(gameQuestionIndexes, correctAnswerIndex, correctAnswerTargetLocation, translatedQuestions) {
-    var answers = [];
-    var answersCopy = translatedQuestions[gameQuestionIndexes[correctAnswerIndex]][Object.keys(translatedQuestions[gameQuestionIndexes[correctAnswerIndex]])[0]].slice();
-    var index = answersCopy.length;
-
-    if (index < ANSWER_COUNT) {
-        throw new Error("Not enough answers for question.");
-    }
-
-    // Shuffle the answers, excluding the first element which is the correct answer.
-    for (var j = 1; j < answersCopy.length; j++){
-        var rand = Math.floor(Math.random() * (index - 1)) + 1;
-        index -= 1;
-
-        var temp = answersCopy[index];
-        answersCopy[index] = answersCopy[rand];
-        answersCopy[rand] = temp;
-    }
-
-    // Swap the correct answer into the target location
-    for (var i = 0; i < ANSWER_COUNT; i++) {
-        answers[i] = answersCopy[i];
-    }
-    temp = answers[0];
-    answers[0] = answers[correctAnswerTargetLocation];
-    answers[correctAnswerTargetLocation] = temp;
-    return answers;
-}
-
-function isAnswerSlotValid(intent) {
-    var answerSlotFilled = intent && intent.slots && intent.slots.Answer && intent.slots.Answer.value;
-    var answerSlotIsInt = answerSlotFilled && !isNaN(parseInt(intent.slots.Answer.value));
-    return answerSlotIsInt && parseInt(intent.slots.Answer.value) < (ANSWER_COUNT + 1) && parseInt(intent.slots.Answer.value) > 0;
-}

@@ -1,7 +1,7 @@
 {
-  "name": "skill-database-js-trivia",
+  "name": "skill-sample-nodejs-fact-i18n",
   "version": "1.0.0",
-  "description": "A simple trivia skill i18n version.",
+  "description": "I18n version of fact skill.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,7 +9,7 @@
   "keywords": [
     "alexa",
     "skill",
-    "trivia"
+    "fact"
   ],
   "author": "Amazon.com",
   "license": "Apache-2.0",
